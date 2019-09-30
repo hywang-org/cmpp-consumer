@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+	<include resource="org/springframework/boot/logging/logback/defaults.xml" />
+	<springProperty scop="context" name="LOG_SERVICE_NAME"
+		source="logging.service.name" />
+	<property name="CONSOLE_LOG_PATTERN"
+		value="%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_SERVICE_NAME}){faint} %clr(${PID:- }){magenta} %clr([%15.15t]){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(%-40.40class{39} %5.5L){cyan}%clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
+	<property name="FILE_LOG_PATTERN"
+		value="%d{yyyy-MM-dd HH:mm:ss.SSS} ${LOG_SERVICE_NAME:-%5p} ${PID:- } [%t] ${LOG_LEVEL_PATTERN:-%5p} %-40.40class{39} %5.5L: %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}" />
+	<property name="LOG_FILE"
+		value="${LOG_FILE:-${LOG_PATH:-${LOG_TEMP:-${java.io.tmpdir:-/tmp}}/}spring.log}" />
+	<include
+		resource="org/springframework/boot/logging/logback/console-appender.xml" />
+
+	<appender name="ROLLING-FILE"
+		class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<encoder>
+			<pattern>${FILE_LOG_PATTERN}</pattern>
+		</encoder>
+		<file>${LOG_FILE}</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<!-- daily rollover -->
+			<!-- 日志命名:单个文件大于100MB 按照时间+自增i 生成log文件 -->
+			<fileNamePattern>${LOG_FILE}.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+			<timeBasedFileNamingAndTriggeringPolicy
+				class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+				<maxFileSize>100MB</maxFileSize>
+			</timeBasedFileNamingAndTriggeringPolicy>
+			<!-- 最大保存时间：180天 -->
+			<maxHistory>180</maxHistory>
+		</rollingPolicy>
+	</appender>
+
+	<root level="INFO">
+		<appender-ref ref="CONSOLE" />
+		<appender-ref ref="ROLLING-FILE" />
+	</root>
+
+</configuration>
