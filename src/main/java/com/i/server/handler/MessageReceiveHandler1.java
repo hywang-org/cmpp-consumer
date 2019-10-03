@@ -3,7 +3,11 @@ package com.i.server.handler;
 import com.alibaba.fastjson.JSONObject;
 import com.i.server.consts.Consts;
 import com.i.server.consts.RedisConsts;
+import com.i.server.data.mysql.dao.SmsDao;
+import com.i.server.data.mysql.entity.DelivOrder;
+import com.i.server.data.mysql.entity.ResOrder;
 import com.i.server.rabbitmq.service.RabbitmqService;
+import com.i.server.util.DateUtil;
 import com.zx.sms.codec.cmpp.msg.CmppDeliverRequestMessage;
 import com.zx.sms.codec.cmpp.msg.CmppDeliverResponseMessage;
 import com.zx.sms.codec.cmpp.msg.CmppSubmitRequestMessage;
@@ -22,9 +26,12 @@ public class MessageReceiveHandler1 extends AbstractBusinessHandler {
 	private final EndpointManager manager = EndpointManager.INS;
 
 	private RabbitmqService rabbitmqService;
+	
+	private SmsDao smsDao;
 
-	public MessageReceiveHandler1(RabbitmqService rabbitmqService) {
+	public MessageReceiveHandler1(RabbitmqService rabbitmqService,SmsDao smsDao) {
 		this.rabbitmqService = rabbitmqService;
+		this.smsDao = smsDao;
 	}
 
 	@Override
@@ -68,7 +75,15 @@ public class MessageReceiveHandler1 extends AbstractBusinessHandler {
 					Consts.CMPP_DELIVER_REQUEST_MESSAGE, e);
 			ctx.channel().writeAndFlush(responseMessage);
 			// cnt.incrementAndGet();
-
+			
+			//insert db deliv_order
+			DelivOrder deliv = new DelivOrder();
+			deliv.setAppId(appId);
+			deliv.setMsgState("0");
+			deliv.setOwnMsgId(ownMsgId);
+			deliv.setSpMsgId(spMsgId);
+			deliv.setShareDate(DateUtil.LocalDateToUdate());
+			smsDao.save(deliv);
 		} else if (msg instanceof CmppDeliverResponseMessage) {
 			CmppDeliverResponseMessage e = (CmppDeliverResponseMessage) msg;
 			System.out.println("MessageReceiveHandler1 CmppDeliverResponseMessage :" + e);
@@ -95,6 +110,12 @@ public class MessageReceiveHandler1 extends AbstractBusinessHandler {
 				System.out.println("提交失败");
 			}
 			System.out.println("MessageReceiveHandler1 CmppSubmitResponseMessage :" + e);
+			//insert db res_order
+			ResOrder res = new ResOrder();
+			res.setMySeqId(ownSequenceId+"");
+			res.setSpMsgId(spMsgId);
+			res.setShareDate(DateUtil.LocalDateToUdate());
+			smsDao.save(res);
 		} else {
 			ctx.fireChannelRead(msg);
 		}

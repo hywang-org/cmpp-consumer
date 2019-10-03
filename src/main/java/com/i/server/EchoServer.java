@@ -20,6 +20,7 @@ import com.i.server.dao.redis.MsgIdAppIdRedis;
 import com.i.server.dao.redis.ProducerRedis;
 import com.i.server.dao.redis.RedisOperationSets;
 import com.i.server.dao.redis.ValidateClientRedis;
+import com.i.server.data.mysql.dao.SmsDao;
 import com.i.server.handler.MessageReceiveHandler1;
 import com.i.server.rabbitmq.service.RabbitmqService;
 import com.zx.sms.codec.cmpp.msg.CmppSubmitRequestMessage;
@@ -40,6 +41,9 @@ public class EchoServer {
 
 	@Autowired
 	private RabbitmqService rabbitmqService;
+	
+	@Resource
+	private SmsDao smsDao;
 
 	@PostConstruct
 	public void EchoServer() {
@@ -78,7 +82,7 @@ public class EchoServer {
 		client.setReSendFailMsg(false);
 		client.setSupportLongmsg(SupportLongMessage.BOTH);
 		List<BusinessHandlerInterface> clienthandlers = new ArrayList<BusinessHandlerInterface>();
-		clienthandlers.add(new MessageReceiveHandler1(rabbitmqService));
+		clienthandlers.add(new MessageReceiveHandler1(rabbitmqService,smsDao));
 		// clienthandlers.add( new SessionConnectedHandler());
 		client.setBusinessHandlerSet(clienthandlers);
 
