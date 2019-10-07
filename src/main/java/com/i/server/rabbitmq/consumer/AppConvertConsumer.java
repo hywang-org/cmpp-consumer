@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.UnsupportedEncodingException;
 
+import org.apache.tomcat.jni.Thread;
 import org.marre.sms.SmsDcs;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,8 +103,8 @@ public class AppConvertConsumer extends DefaultConsumer {
 					msgContent);
 			System.out.println("cmppObj msgcontent = " + cmppObj.getMsgContent());
 			sendSms(cmppObj);
-
 		}
+		this.getChannel().basicAck(envelope.getDeliveryTag(), false);
 		// CmppSubmitRequestSelfDefinedMessage selfDefinedMessage =
 		// mqEntity.getSelfDefinedMessage();
 		// System.out.println("selfDefinedMessage =" +
@@ -132,7 +133,7 @@ public class AppConvertConsumer extends DefaultConsumer {
 				break;
 			} else {
 				try {
-					Thread.sleep(10);
+					java.lang.Thread.sleep(10);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -392,7 +393,7 @@ public class AppConvertConsumer extends DefaultConsumer {
 				break;
 			} else {
 				try {
-					Thread.sleep(10);
+					java.lang.Thread.sleep(10);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -454,7 +455,7 @@ public class AppConvertConsumer extends DefaultConsumer {
 	@Override
 	public void handleShutdownSignal(String consumerTag, ShutdownSignalException sig) {
 		try {
-			Thread.sleep(2000);
+			java.lang.Thread.sleep(2000);
 		} catch (InterruptedException e1) {
 			LOGGER.error(e1.getMessage(), e1);
 		}

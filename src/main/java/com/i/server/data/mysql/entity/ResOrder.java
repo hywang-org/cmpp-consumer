@@ -22,7 +22,7 @@ public class ResOrder {
 
     private String id;
 
-    private String mySeqId;
+    private String ownSeqId;
 
     private String spMsgId;
     
@@ -45,13 +45,13 @@ public class ResOrder {
         this.id = id == null ? null : id.trim();
     }
 
-    @Column(name = "my_seq_id")
-    public String getMySeqId() {
-        return mySeqId;
+    @Column(name = "own_seq_id")
+    public String getOwnSeqId() {
+        return ownSeqId;
     }
 
-    public void setMySeqId(String mySeqId) {
-        this.mySeqId = mySeqId;
+    public void setOwnSeqId(String ownSeqId) {
+        this.ownSeqId = ownSeqId;
     }
 
     @Column(name = "sp_msg_id")

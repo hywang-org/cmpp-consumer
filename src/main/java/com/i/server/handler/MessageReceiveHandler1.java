@@ -112,7 +112,7 @@ public class MessageReceiveHandler1 extends AbstractBusinessHandler {
 			System.out.println("MessageReceiveHandler1 CmppSubmitResponseMessage :" + e);
 			//insert db res_order
 			ResOrder res = new ResOrder();
-			res.setMySeqId(ownSequenceId+"");
+			res.setOwnSeqId(ownSequenceId+"");
 			res.setSpMsgId(spMsgId);
 			res.setShareDate(DateUtil.LocalDateToUdate());
 			smsDao.save(res);
