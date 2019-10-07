@@ -3,7 +3,6 @@ package com.i.server;
 import com.i.server.consts.RedisConsts;
 import com.i.server.dao.redis.*;
 import com.i.server.data.mysql.dao.SmsDao;
-import com.i.server.data.mysql.entity.App;
 import com.i.server.data.mysql.entity.Channel;
 import com.i.server.handler.MessageReceiveHandler1;
 import com.i.server.rabbitmq.service.RabbitmqService;
@@ -58,34 +57,38 @@ public class EchoServer {
 	ProducerRedis r4;
 
 	public void connect() {
-		//import com.i.server.data.mysql.entity.Channel
-		App app = smsDao.findSingle("from App where id = ?", 1l);
-		Channel channel = smsDao.findSingle("from Channel where id = ?", 1l);
-//		ResOrder resOrder = smsDao.findSingle("from ResOrder where id = ?", 1l);
-//		List<Channel> channelList = smsDao.find("from tbl_channel");
-//		System.out.println("channelList size = " +channelList.size());
-		CMPPClientEndpointEntity client = new CMPPClientEndpointEntity();
-		client.setId("109002");
-		client.setHost("121.41.46.165");
-		client.setPort(7890);
-		client.setUserName("109002");
-		client.setPassword("Aa123456");
-		client.setServiceId("");
-		client.setMaxChannels((short) 1);
-		client.setVersion((short) 0x20);
-		client.setWriteLimit(100);
+		List<Channel> channelList = smsDao.find("from Channel");
+		System.out.println("channelList size = " +channelList.size());
+		for(Channel channel:channelList) {
+			CMPPClientEndpointEntity client = new CMPPClientEndpointEntity();
+			client.setId(channel.getSpId());
+			client.setHost(channel.getSpIp());
+			client.setPort(channel.getSpPort());
+			client.setUserName(channel.getSpLoginName());
+			client.setPassword(channel.getSpLoginPwd());
+			client.setServiceId("");
+			client.setMaxChannels((short) 1);
+			client.setVersion((short) 0x20);
+			client.setWriteLimit(channel.getSpeedLimit());
 
-		client.setGroupName("test");
-		client.setChartset(Charset.forName("utf-8"));
-		client.setRetryWaitTimeSec((short) 30);
-		client.setUseSSL(false);
-		client.setMaxRetryCnt((short) 0);
-		client.setReSendFailMsg(false);
-		client.setSupportLongmsg(SupportLongMessage.BOTH);
-		List<BusinessHandlerInterface> clienthandlers = new ArrayList<BusinessHandlerInterface>();
-		clienthandlers.add(new MessageReceiveHandler1(rabbitmqService,smsDao));
-		// clienthandlers.add( new SessionConnectedHandler());
-		client.setBusinessHandlerSet(clienthandlers);
+			client.setGroupName("test");
+			client.setChartset(Charset.forName("utf-8"));
+			client.setRetryWaitTimeSec((short) 30);
+			client.setUseSSL(false);
+			client.setMaxRetryCnt((short) 0);
+			client.setReSendFailMsg(false);
+			client.setSupportLongmsg(SupportLongMessage.BOTH);
+			List<BusinessHandlerInterface> clienthandlers = new ArrayList<BusinessHandlerInterface>();
+			clienthandlers.add(new MessageReceiveHandler1(rabbitmqService, smsDao));
+			// clienthandlers.add( new SessionConnectedHandler());
+			client.setBusinessHandlerSet(clienthandlers);
+
+			manager.addEndpointEntity(client);
+
+			for (int i = 0; i < client.getMaxChannels(); i++) {
+				manager.openEndpoint(client);
+			}
+		}
 
 		Map<String, RedisOperationSets> redisOperationSetsMap = new HashMap<String, RedisOperationSets>();
 		redisOperationSetsMap.put(RedisConsts.REDIS_VALIDATE_CLINET, r1);
@@ -94,16 +97,6 @@ public class EchoServer {
 		redisOperationSetsMap.put(RedisConsts.REDIS_PRODUCER, r4);
 		// ly modify
 		manager.setRedisOperationSetsMap(redisOperationSetsMap);
-
-		manager.addEndpointEntity(client);
-		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		for (int i = 0; i < client.getMaxChannels(); i++)
-			manager.openEndpoint(client);
 	}
 
 	public static void sendSms2(CmppSubmitRequestMessage msg) {

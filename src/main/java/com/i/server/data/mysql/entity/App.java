@@ -4,13 +4,11 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import javax.persistence.Table;
-
-import org.springframework.data.annotation.Id;
-
-import com.sleepycat.persist.model.Entity;
 
 @Entity
 @Table(name = "tbl_app")
@@ -102,7 +100,7 @@ public class App {
 
 	/**
 	 * 主键自增Id
-	 * 
+	 *
 	 * @return id 主键自增Id
 	 */
 	@Id
@@ -114,7 +112,7 @@ public class App {
 
 	/**
 	 * 主键自增Id
-	 * 
+	 *
 	 * @param id
 	 *            主键自增Id
 	 */
@@ -124,7 +122,7 @@ public class App {
 
 	/**
 	 * 接入号
-	 * 
+	 *
 	 * @return app_id 接入号
 	 */
 	@Column(name = "app_id")
@@ -134,7 +132,7 @@ public class App {
 
 	/**
 	 * 接入号
-	 * 
+	 *
 	 * @param appId
 	 *            接入号
 	 */
@@ -144,7 +142,7 @@ public class App {
 
 	/**
 	 * 产品名称
-	 * 
+	 *
 	 * @return app_name 产品名称
 	 */
 	@Column(name = "app_name")
@@ -154,7 +152,7 @@ public class App {
 
 	/**
 	 * 产品名称
-	 * 
+	 *
 	 * @param appName
 	 *            产品名称
 	 */
@@ -164,7 +162,7 @@ public class App {
 
 	/**
 	 * 用户Id
-	 * 
+	 *
 	 * @return user_id 用户Id
 	 */
 	@Column(name = "user_id")
@@ -174,7 +172,7 @@ public class App {
 
 	/**
 	 * 用户Id
-	 * 
+	 *
 	 * @param userId
 	 *            用户Id
 	 */
@@ -184,7 +182,7 @@ public class App {
 
 	/**
 	 * 所属领域
-	 * 
+	 *
 	 * @return field 所属领域
 	 */
 	@Column(name = "field")
@@ -194,7 +192,7 @@ public class App {
 
 	/**
 	 * 所属领域
-	 * 
+	 *
 	 * @param field
 	 *            所属领域
 	 */
@@ -213,7 +211,7 @@ public class App {
 
 	/**
 	 * 回调地址
-	 * 
+	 *
 	 * @return callback_url 回调地址
 	 */
 	@Column(name = "callback_url")
@@ -223,7 +221,7 @@ public class App {
 
 	/**
 	 * 回调地址
-	 * 
+	 *
 	 * @param callbackUrl
 	 *            回调地址
 	 */
@@ -233,7 +231,7 @@ public class App {
 
 	/**
 	 * 状态，0：启用 1：禁用
-	 * 
+	 *
 	 * @return app_status 状态，0：启用 1：禁用
 	 */
 	@Column(name = "app_status")
@@ -243,7 +241,7 @@ public class App {
 
 	/**
 	 * 状态，0：启用 1：禁用
-	 * 
+	 *
 	 * @param appStatus
 	 *            状态，0：启用 1：禁用
 	 */
@@ -253,7 +251,7 @@ public class App {
 
 	/**
 	 * 扩展码
-	 * 
+	 *
 	 * @return extendCode 扩展码
 	 */
 	@Column(name = "extend_code")
@@ -263,7 +261,7 @@ public class App {
 
 	/**
 	 * 扩展码
-	 * 
+	 *
 	 * @param extendcode
 	 *            扩展码
 	 */
@@ -273,7 +271,7 @@ public class App {
 
 	/**
 	 * 流速
-	 * 
+	 *
 	 * @return speed_limit 流速
 	 */
 	@Column(name = "speed_limit")
@@ -283,7 +281,7 @@ public class App {
 
 	/**
 	 * 流速
-	 * 
+	 *
 	 * @param speedLimit
 	 *            流速
 	 */
@@ -293,7 +291,7 @@ public class App {
 
 	/**
 	 * 开始发送时间
-	 * 
+	 *
 	 * @return send_begin_time 开始发送时间
 	 */
 	@Column(name = "send_begin_time")
@@ -303,7 +301,7 @@ public class App {
 
 	/**
 	 * 开始发送时间
-	 * 
+	 *
 	 * @param sendBeginTime
 	 *            开始发送时间
 	 */
@@ -313,7 +311,7 @@ public class App {
 
 	/**
 	 * 结束发送时间
-	 * 
+	 *
 	 * @return send_end_time 结束发送时间
 	 */
 	@Column(name = "send_end_time")
@@ -323,7 +321,7 @@ public class App {
 
 	/**
 	 * 结束发送时间
-	 * 
+	 *
 	 * @param sendEndTime
 	 *            结束发送时间
 	 */
@@ -333,7 +331,7 @@ public class App {
 
 	/**
 	 * 单条短信价格
-	 * 
+	 *
 	 * @return price 单条短信价格
 	 */
 	@Column(name = "price")
@@ -343,7 +341,7 @@ public class App {
 
 	/**
 	 * 单条短信价格
-	 * 
+	 *
 	 * @param price
 	 *            单条短信价格
 	 */
@@ -353,7 +351,7 @@ public class App {
 
 	/**
 	 * 支付类型 0 为预付款 1为后付款
-	 * 
+	 *
 	 * @return pay_type 支付类型 0 为预付款 1为后付款
 	 */
 	@Column(name = "pay_type")
@@ -363,7 +361,7 @@ public class App {
 
 	/**
 	 * 支付类型 0 为预付款 1为后付款
-	 * 
+	 *
 	 * @param payType
 	 *            支付类型 0 为预付款 1为后付款
 	 */
@@ -373,7 +371,7 @@ public class App {
 
 	/**
 	 * 通道
-	 * 
+	 *
 	 * @return channel 通道
 	 */
 	@Column(name = "channel")
@@ -383,7 +381,7 @@ public class App {
 
 	/**
 	 * 通道
-	 * 
+	 *
 	 * @param channel
 	 *            通道
 	 */
@@ -393,7 +391,7 @@ public class App {
 
 	/**
 	 * 创建时间
-	 * 
+	 *
 	 * @return created_date 创建时间
 	 */
 	@Column(name = "created_date")
@@ -403,7 +401,7 @@ public class App {
 
 	/**
 	 * 创建时间
-	 * 
+	 *
 	 * @param createdDate
 	 *            创建时间
 	 */
@@ -413,7 +411,7 @@ public class App {
 
 	/**
 	 * 更新时间
-	 * 
+	 *
 	 * @return updated_date 更新时间
 	 */
 	@Column(name = "updated_date")
@@ -423,7 +421,7 @@ public class App {
 
 	/**
 	 * 更新时间
-	 * 
+	 *
 	 * @param updatedDate
 	 *            更新时间
 	 */

@@ -1,7 +1,5 @@
 package com.i.server.data.mysql.dao;
 
-import javax.annotation.PostConstruct;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.SessionFactory;
@@ -9,8 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import com.i.server.data.mysql.dao.HibernateDao;
-import com.i.server.data.mysql.dao.SessionFactoryBuilder;
+import javax.annotation.PostConstruct;
 
 @Component
 public class SmsDao extends HibernateDao {
@@ -47,6 +44,7 @@ public class SmsDao extends HibernateDao {
 		sfb.setShowSql(show_sql);
 		SessionFactory sf = sfb.buildSessionFactory();
 		setSessionFactory(sf);
+		System.out.println("mysql init");
 	}
 
 }
