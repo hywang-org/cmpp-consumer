@@ -1,15 +1,13 @@
 package com.i.server.data.mysql.entity;
 
-import java.util.Date;
+import com.sleepycat.persist.model.Entity;
+import org.springframework.data.annotation.Id;
 
 import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
-
-import org.springframework.data.annotation.Id;
-
-import com.sleepycat.persist.model.Entity;
+import java.util.Date;
 
 @Entity
 @Table(name = "tbl_channel")
@@ -103,7 +101,7 @@ public class Channel {
 
 	/**
 	 * 接入号
-	 * 
+	 *
 	 * @return sp_id 接入号
 	 */
 	@Column(name = "sp_id")
@@ -113,7 +111,7 @@ public class Channel {
 
 	/**
 	 * 接入号
-	 * 
+	 *
 	 * @param spId
 	 *            接入号
 	 */
@@ -123,7 +121,7 @@ public class Channel {
 
 	/**
 	 * 通道名称
-	 * 
+	 *
 	 * @return sp_name 通道名称
 	 */
 	@Column(name = "sp_name")
@@ -133,7 +131,7 @@ public class Channel {
 
 	/**
 	 * 通道名称
-	 * 
+	 *
 	 * @param spName
 	 *            通道名称
 	 */
@@ -143,7 +141,7 @@ public class Channel {
 
 	/**
 	 * 通道类型
-	 * 
+	 *
 	 * @return sp_type 通道类型
 	 */
 	@Column(name = "sp_type")
@@ -153,7 +151,7 @@ public class Channel {
 
 	/**
 	 * 通道类型
-	 * 
+	 *
 	 * @param spType
 	 *            通道类型
 	 */
@@ -163,7 +161,7 @@ public class Channel {
 
 	/**
 	 * 状态，0:可用 1:不可用
-	 * 
+	 *
 	 * @return sp_status 状态，0:可用 1:不可用
 	 */
 	@Column(name = "sp_status")
@@ -173,7 +171,7 @@ public class Channel {
 
 	/**
 	 * 状态，0:可用 1:不可用
-	 * 
+	 *
 	 * @param spStatus
 	 *            状态，0:可用 1:不可用
 	 */
@@ -183,7 +181,7 @@ public class Channel {
 
 	/**
 	 * 状态，0:可用 1:不可用
-	 * 
+	 *
 	 * @return sp_connect_status 状态，0:可用 1:不可用
 	 */
 	@Column(name = "sp_connect_status")
@@ -193,7 +191,7 @@ public class Channel {
 
 	/**
 	 * 状态，0:可用 1:不可用
-	 * 
+	 *
 	 * @param spConnectStatus
 	 *            状态，0:可用 1:不可用
 	 */
@@ -203,7 +201,7 @@ public class Channel {
 
 	/**
 	 * 通道ip
-	 * 
+	 *
 	 * @return sp_ip 通道ip
 	 */
 	@Column(name = "sp_ip")
@@ -213,7 +211,7 @@ public class Channel {
 
 	/**
 	 * 通道ip
-	 * 
+	 *
 	 * @param spIp
 	 *            通道ip
 	 */
@@ -223,7 +221,7 @@ public class Channel {
 
 	/**
 	 * 通道端口
-	 * 
+	 *
 	 * @return sp_port 通道端口
 	 */
 	@Column(name = "sp_port")
@@ -233,7 +231,7 @@ public class Channel {
 
 	/**
 	 * 通道端口
-	 * 
+	 *
 	 * @param spPort
 	 *            通道端口
 	 */
@@ -243,7 +241,7 @@ public class Channel {
 
 	/**
 	 * 流速
-	 * 
+	 *
 	 * @return speed_limit 流速
 	 */
 	@Column(name = "speed_limit")
@@ -253,7 +251,7 @@ public class Channel {
 
 	/**
 	 * 流速
-	 * 
+	 *
 	 * @param speedLimit
 	 *            流速
 	 */
@@ -263,7 +261,7 @@ public class Channel {
 
 	/**
 	 * 登录名
-	 * 
+	 *
 	 * @return sp_login_name 登录名
 	 */
 	@Column(name = "sp_login_name")
@@ -273,7 +271,7 @@ public class Channel {
 
 	/**
 	 * 登录名
-	 * 
+	 *
 	 * @param spLoginName
 	 *            登录名
 	 */
@@ -283,7 +281,7 @@ public class Channel {
 
 	/**
 	 * 登陆密码
-	 * 
+	 *
 	 * @return sp_login_pwd 登陆密码
 	 */
 	@Column(name = "sp_login_pwd")
@@ -293,7 +291,7 @@ public class Channel {
 
 	/**
 	 * 登陆密码
-	 * 
+	 *
 	 * @param spLoginPwd
 	 *            登陆密码
 	 */
@@ -303,7 +301,7 @@ public class Channel {
 
 	/**
 	 * 创建时间
-	 * 
+	 *
 	 * @return created_date 创建时间
 	 */
 	@Column(name = "created_date")
@@ -313,7 +311,7 @@ public class Channel {
 
 	/**
 	 * 创建时间
-	 * 
+	 *
 	 * @param createdDate
 	 *            创建时间
 	 */
@@ -323,7 +321,7 @@ public class Channel {
 
 	/**
 	 * 更新时间
-	 * 
+	 *
 	 * @return updated_date 更新时间
 	 */
 	@Column(name = "updated_date")
@@ -333,7 +331,7 @@ public class Channel {
 
 	/**
 	 * 更新时间
-	 * 
+	 *
 	 * @param updatedDate
 	 *            更新时间
 	 */

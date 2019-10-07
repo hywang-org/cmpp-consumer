@@ -1,26 +1,10 @@
 package com.i.server;
 
-import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
 import com.i.server.consts.RedisConsts;
-import com.i.server.dao.redis.ConsumerRedis;
-import com.i.server.dao.redis.MsgIdAppIdRedis;
-import com.i.server.dao.redis.ProducerRedis;
-import com.i.server.dao.redis.RedisOperationSets;
-import com.i.server.dao.redis.ValidateClientRedis;
+import com.i.server.dao.redis.*;
 import com.i.server.data.mysql.dao.SmsDao;
+import com.i.server.data.mysql.entity.App;
+import com.i.server.data.mysql.entity.Channel;
 import com.i.server.handler.MessageReceiveHandler1;
 import com.i.server.rabbitmq.service.RabbitmqService;
 import com.zx.sms.codec.cmpp.msg.CmppSubmitRequestMessage;
@@ -30,8 +14,19 @@ import com.zx.sms.connect.manager.EndpointEntity.SupportLongMessage;
 import com.zx.sms.connect.manager.EndpointManager;
 import com.zx.sms.connect.manager.cmpp.CMPPClientEndpointEntity;
 import com.zx.sms.handler.api.BusinessHandlerInterface;
-
 import io.netty.channel.ChannelFuture;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 public class EchoServer {
@@ -63,6 +58,12 @@ public class EchoServer {
 	ProducerRedis r4;
 
 	public void connect() {
+		//import com.i.server.data.mysql.entity.Channel
+		App app = smsDao.findSingle("from App where id = ?", 1l);
+		Channel channel = smsDao.findSingle("from Channel where id = ?", 1l);
+//		ResOrder resOrder = smsDao.findSingle("from ResOrder where id = ?", 1l);
+//		List<Channel> channelList = smsDao.find("from tbl_channel");
+//		System.out.println("channelList size = " +channelList.size());
 		CMPPClientEndpointEntity client = new CMPPClientEndpointEntity();
 		client.setId("109002");
 		client.setHost("121.41.46.165");

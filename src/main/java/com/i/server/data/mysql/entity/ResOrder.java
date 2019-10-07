@@ -1,13 +1,7 @@
 package com.i.server.data.mysql.entity;
 
+import javax.persistence.*;
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 /**
  * @author 作者 :hywang
@@ -20,7 +14,7 @@ import javax.persistence.Table;
 @Table(name = "tbl_res_order")
 public class ResOrder {
 
-    private String id;
+    private Long id;
 
     private String ownSeqId;
 
@@ -31,18 +25,18 @@ public class ResOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * order_id
-     * 
+     *
      * @param id
      *            order_id
      */
-    public void setId(String id) {
-        this.id = id == null ? null : id.trim();
+    public void setId(Long id1) {
+        this.id = id;
     }
 
     @Column(name = "own_seq_id")

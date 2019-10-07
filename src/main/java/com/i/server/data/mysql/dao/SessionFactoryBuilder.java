@@ -1,7 +1,5 @@
 package com.i.server.data.mysql.dao;
 
-import javax.persistence.Entity;
-
 import org.apache.commons.lang.ArrayUtils;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
@@ -12,6 +10,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
+
+import javax.persistence.Entity;
 
 /**
  * 使用原生API生成hibernate dao
@@ -30,7 +30,7 @@ public class SessionFactoryBuilder {
 	private String dialect = "org.hibernate.dialect.MySQLDialect";
 	private String hbm2ddl = "none";
 	private String showSql = "false";
-	private String[] packagesToScan = new String[] { "com.iflytek" };
+	private String[] packagesToScan = new String[] { "com.i" };
 
 	public String getUrl() {
 		return url;
