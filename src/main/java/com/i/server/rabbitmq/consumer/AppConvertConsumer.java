@@ -1,28 +1,11 @@
-
 package com.i.server.rabbitmq.consumer;
-
-import static com.zx.sms.common.util.NettyByteBufUtil.toArray;
-
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.UnsupportedEncodingException;
-
-import org.apache.tomcat.jni.Thread;
-import org.marre.sms.SmsDcs;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.i.server.consts.Consts;
 import com.i.server.rabbitmq.service.MqEntity;
 import com.i.server.rabbitmq.service.RabbitmqService;
-import com.rabbitmq.client.AMQP;
-import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.DefaultConsumer;
-import com.rabbitmq.client.Envelope;
-import com.rabbitmq.client.ShutdownSignalException;
+import com.rabbitmq.client.*;
 import com.zx.sms.codec.cmpp.msg.CmppSubmitRequestMessage;
 import com.zx.sms.codec.cmpp.msg.CmppSubmitRequestSelfDefinedMessage;
 import com.zx.sms.codec.cmpp.packet.CmppSubmitRequest;
@@ -33,10 +16,19 @@ import com.zx.sms.common.util.DefaultMsgIdUtil;
 import com.zx.sms.common.util.MsgId;
 import com.zx.sms.connect.manager.EndpointConnector;
 import com.zx.sms.connect.manager.EndpointManager;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelFuture;
+import org.marre.sms.SmsDcs;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.UnsupportedEncodingException;
+
+import static com.zx.sms.common.util.NettyByteBufUtil.toArray;
 
 public class AppConvertConsumer extends DefaultConsumer {
 
@@ -96,15 +88,15 @@ public class AppConvertConsumer extends DefaultConsumer {
 		String msgContent = mqEntity.getMsgContent();
 		System.out.println("cmppVersion = " + cmppVersion);
 		switch (cmppMsgType) {
-		case Consts.CMPP_SUBMIT_REQUEST_MESSAGE:
-			CmppSubmitRequestSelfDefinedMessage cmppSubmitRequestSelfDefinedMessage = (CmppSubmitRequestSelfDefinedMessage) mqEntity
-					.getObj();
-			CmppSubmitRequestMessage cmppObj = formCmppMessage(cmppSubmitRequestSelfDefinedMessage, cmppVersion, msgId,
-					msgContent);
-			System.out.println("cmppObj msgcontent = " + cmppObj.getMsgContent());
-			sendSms(cmppObj);
+			case Consts.CMPP_SUBMIT_REQUEST_MESSAGE:
+				CmppSubmitRequestSelfDefinedMessage cmppSubmitRequestSelfDefinedMessage = (CmppSubmitRequestSelfDefinedMessage) mqEntity
+						.getObj();
+				CmppSubmitRequestMessage cmppObj = formCmppMessage(cmppSubmitRequestSelfDefinedMessage, cmppVersion, msgId,
+						msgContent);
+				System.out.println("cmppObj msgcontent = " + cmppObj.getMsgContent());
+				sendSms(cmppObj);
 		}
-		this.getChannel().basicAck(envelope.getDeliveryTag(), false);
+//		this.getChannel().basicAck(envelope.getDeliveryTag(), false);
 		// CmppSubmitRequestSelfDefinedMessage selfDefinedMessage =
 		// mqEntity.getSelfDefinedMessage();
 		// System.out.println("selfDefinedMessage =" +
@@ -144,21 +136,21 @@ public class AppConvertConsumer extends DefaultConsumer {
 	}
 
 	private CmppSubmitRequestMessage formCmppMessage(CmppSubmitRequestSelfDefinedMessage selfDefinedMessage,
-			String cmppVersion, MsgId msgId, String msgContent) {
+	                                                 String cmppVersion, MsgId msgId, String msgContent) {
 		CmppSubmitRequestMessage cmppSubmitRequestMessage = null;
 		switch (cmppVersion) {
-		case Consts.TYPE20:
-			cmppSubmitRequestMessage = formCmppMessage20(selfDefinedMessage, msgId, msgContent);
-			break;
-		default:
-			cmppSubmitRequestMessage = formCmppMessage30(selfDefinedMessage, msgId);
-			break;
+			case Consts.TYPE20:
+				cmppSubmitRequestMessage = formCmppMessage20(selfDefinedMessage, msgId, msgContent);
+				break;
+			default:
+				cmppSubmitRequestMessage = formCmppMessage30(selfDefinedMessage, msgId);
+				break;
 		}
 		return cmppSubmitRequestMessage;
 	}
 
 	private CmppSubmitRequestMessage formCmppMessage30(CmppSubmitRequestSelfDefinedMessage selfDefinedMessage,
-			MsgId msgId) {
+	                                                   MsgId msgId) {
 		CmppSubmitRequestMessage requestMessage = new CmppSubmitRequestMessage(selfDefinedMessage.getHeader());
 
 		ByteBuf bodyBuffer = Unpooled.wrappedBuffer(selfDefinedMessage.getBodyBuffer());
@@ -172,7 +164,10 @@ public class AppConvertConsumer extends DefaultConsumer {
 		requestMessage.setPktotal(bodyBuffer.readUnsignedByte());
 		requestMessage.setPknumber(bodyBuffer.readUnsignedByte());
 
-		requestMessage.setRegisteredDelivery(bodyBuffer.readUnsignedByte());
+		bodyBuffer.readUnsignedByte();
+		//发送给运营商时无论客户是否需要接收deliver消息，我们都需要运营商给deliver消息用于记录
+		requestMessage.setRegisteredDelivery(Consts.YES_DELIVER);
+
 		System.out.println("requestMessage get = " + requestMessage.getRegisteredDelivery());
 		requestMessage.setMsglevel(bodyBuffer.readUnsignedByte());
 		requestMessage.setServiceId(bodyBuffer
@@ -239,7 +234,7 @@ public class AppConvertConsumer extends DefaultConsumer {
 	}
 
 	private CmppSubmitRequestMessage formCmppMessage20(CmppSubmitRequestSelfDefinedMessage selfDefinedMessage,
-			MsgId msgId, String msgContent) {
+	                                                   MsgId msgId, String msgContent) {
 		CmppSubmitRequestMessage requestMessage = new CmppSubmitRequestMessage(selfDefinedMessage.getHeader());
 
 		System.out.println("selfDefinedMessage.getHeader() head length = "
@@ -263,7 +258,8 @@ public class AppConvertConsumer extends DefaultConsumer {
 
 		// requestMessage.setRegisteredDelivery(bodyBuffer.readUnsignedByte());
 		bodyBuffer.readUnsignedByte();
-		requestMessage.setRegisteredDelivery((short) 15);
+		//发送给运营商时无论客户是否需要接收deliver消息，我们都需要运营商给deliver消息用于记录
+		requestMessage.setRegisteredDelivery(Consts.YES_DELIVER);
 		System.out.println("requestMessage get = " + requestMessage.getRegisteredDelivery());
 		requestMessage.setMsglevel(bodyBuffer.readUnsignedByte());
 		requestMessage.setServiceId(bodyBuffer
@@ -494,5 +490,4 @@ public class AppConvertConsumer extends DefaultConsumer {
 	public void handleRecoverOk(String consumerTag) {
 		LOGGER.info("transcodeConsumer handleRecoverOk: " + consumerTag);
 	}
-
 }

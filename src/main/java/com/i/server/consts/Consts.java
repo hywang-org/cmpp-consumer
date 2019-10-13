@@ -9,4 +9,8 @@ public class Consts {
 
 	public static final String TYPE30 = "Type30";
 
+	public static final short NO_DELIVER = 0;
+
+	public static final short YES_DELIVER = 1;
+
 }
