@@ -35,7 +35,7 @@ public class ResOrder {
      * @param id
      *            order_id
      */
-    public void setId(Long id1) {
+    public void setId(Long id) {
         this.id = id;
     }
 
