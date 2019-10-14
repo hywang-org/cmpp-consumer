@@ -269,7 +269,7 @@ public abstract class AbstractEndpointConnector implements EndpointConnector<End
 		// 调用子类的bind方法
 		doBindHandler(pipe, entity);
 		
-		pipe.addAfter(GlobalConstance.codecName,"msgLog", new MessageLogHandler(entity));
+		//pipe.addAfter(GlobalConstance.codecName,"msgLog", new MessageLogHandler(entity));
 		
 		List<BusinessHandlerInterface> handlers = entity.getBusinessHandlerSet();
 		if (handlers != null && handlers.size() > 0) {

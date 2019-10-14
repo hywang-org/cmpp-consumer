@@ -39,7 +39,7 @@ public class CMPPServerEndpointConnector extends AbstractServerEndpointConnector
         pipeline.addLast("CmppServerIdleStateHandler", GlobalConstance.idleHandler);
         pipeline.addLast(codec.pipeName(), codec);
 
-        pipeline.addLast("sessionLoginManager", new SessionLoginManager(getEndpointEntity()));
+       // pipeline.addLast("sessionLoginManager", new SessionLoginManager(getEndpointEntity()));
     }
 
 }

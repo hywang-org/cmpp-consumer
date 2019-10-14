@@ -16,7 +16,6 @@ import com.zx.sms.common.util.MsgId;
 import com.zx.sms.connect.manager.EndpointManager;
 import com.zx.sms.handler.api.AbstractBusinessHandler;
 import com.zx.sms.session.cmpp.SessionState;
-
 import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -26,10 +25,10 @@ public class MessageReceiveHandler1 extends AbstractBusinessHandler {
 	private final EndpointManager manager = EndpointManager.INS;
 
 	private RabbitmqService rabbitmqService;
-	
+
 	private SmsDao smsDao;
 
-	public MessageReceiveHandler1(RabbitmqService rabbitmqService,SmsDao smsDao) {
+	public MessageReceiveHandler1(RabbitmqService rabbitmqService, SmsDao smsDao) {
 		this.rabbitmqService = rabbitmqService;
 		this.smsDao = smsDao;
 	}
@@ -64,18 +63,23 @@ public class MessageReceiveHandler1 extends AbstractBusinessHandler {
 			String ownMsgId = jsonObject1.getString("ownMsgId");
 			String channelId = jsonObject1.getString("channelId");
 			Long clientSequenceId = jsonObject1.getLong("clientSequenceId");
+			String serverId = jsonObject1.getString("serverId");
+			short needDeliver = jsonObject1.getShort("needDeliver");
 
 			System.out.println("MessageReceiveHandler1 CmppDeliverRequestMessage:" + e);
-			CmppDeliverResponseMessage responseMessage = new CmppDeliverResponseMessage(e.getHeader().getSequenceId());
-			responseMessage.setResult(0);
+			//如果客户不需要接收deliver消息
+			if (needDeliver != Consts.NO_DELIVER) {
+				CmppDeliverResponseMessage responseMessage = new CmppDeliverResponseMessage(e.getHeader().getSequenceId());
+				responseMessage.setResult(0);
 
-			e.setSequenceNo(clientSequenceId);
-			e.setMsgId(new MsgId(ownMsgId));
-			rabbitmqService.publishBackMsgToMq(appId, ownMsgId, channelId, ownSequenceId,
-					Consts.CMPP_DELIVER_REQUEST_MESSAGE, e);
-			ctx.channel().writeAndFlush(responseMessage);
+				e.setSequenceNo(clientSequenceId);
+				e.setMsgId(new MsgId(ownMsgId));
+				rabbitmqService.publishBackMsgToMq(serverId, appId, ownMsgId, channelId, ownSequenceId,
+						Consts.CMPP_DELIVER_REQUEST_MESSAGE, e);
+				ctx.channel().writeAndFlush(responseMessage);
+			}
 			// cnt.incrementAndGet();
-			
+
 			//insert db deliv_order
 			DelivOrder deliv = new DelivOrder();
 			deliv.setAppId(appId);
@@ -112,7 +116,7 @@ public class MessageReceiveHandler1 extends AbstractBusinessHandler {
 			System.out.println("MessageReceiveHandler1 CmppSubmitResponseMessage :" + e);
 			//insert db res_order
 			ResOrder res = new ResOrder();
-			res.setOwnSeqId(ownSequenceId+"");
+			res.setOwnSeqId(ownSequenceId + "");
 			res.setSpMsgId(spMsgId);
 			res.setShareDate(DateUtil.LocalDateToUdate());
 			smsDao.save(res);

@@ -1,15 +1,5 @@
 package com.i.server.rabbitmq.service;
 
-import java.io.IOException;
-import java.util.Set;
-import java.util.concurrent.TimeoutException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.i.server.consts.Consts;
@@ -21,6 +11,15 @@ import com.rabbitmq.client.ConnectionFactory;
 import com.rabbitmq.client.MessageProperties;
 import com.zx.sms.codec.cmpp.msg.CmppDeliverRequestMessage;
 import com.zx.sms.codec.cmpp.msg.CmppDeliverRequestSelfDefinedMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.Set;
+import java.util.concurrent.TimeoutException;
 
 @Service
 public class RabbitmqService {
@@ -59,26 +58,26 @@ public class RabbitmqService {
 		return getConnection().createChannel();
 	}
 
-	public void publishBackMsgToMq(String appId, String ownMsgId, String channelId, long ownSequenceId, String cmppType,
-			Object obj) throws IOException, TimeoutException {
+	public void publishBackMsgToMq(String serverId, String appId, String ownMsgId, String channelId, long ownSequenceId, String cmppType,
+	                               Object obj) throws IOException, TimeoutException {
 		MqEntity mqEntity = null;
 		switch (cmppType) {
-		case Consts.CMPP_DELIVER_REQUEST_MESSAGE:
-			CmppDeliverRequestSelfDefinedMessage cmppDeliverRequestSelfDefinedMessage = ((CmppDeliverRequestMessage) obj)
-					.getCmppDeliverRequestSelfDefinedMessage();
-			System.out.println("getBodyBuffer length = " + cmppDeliverRequestSelfDefinedMessage.getBodyBuffer().length);
-			mqEntity = new MqEntity();
-			mqEntity.setAppId(appId);
-			mqEntity.setChannelId(channelId);
-			mqEntity.setOwnSequenceId(ownSequenceId);
-			mqEntity.setMsgId(((CmppDeliverRequestMessage) obj).getMsgId());
-			mqEntity.setObj(cmppDeliverRequestSelfDefinedMessage);
-			mqEntity.setCmppMsgType(cmppType);
-			mqEntity.setCmppVersion(((CmppDeliverRequestMessage) obj).getCmppVersion());
-			break;
-		default:
-			LOGGER.error("wrong cmpp type");
-			break;
+			case Consts.CMPP_DELIVER_REQUEST_MESSAGE:
+				CmppDeliverRequestSelfDefinedMessage cmppDeliverRequestSelfDefinedMessage = ((CmppDeliverRequestMessage) obj)
+						.getCmppDeliverRequestSelfDefinedMessage();
+				System.out.println("getBodyBuffer length = " + cmppDeliverRequestSelfDefinedMessage.getBodyBuffer().length);
+				mqEntity = new MqEntity();
+				mqEntity.setAppId(appId);
+				mqEntity.setChannelId(channelId);
+				mqEntity.setOwnSequenceId(ownSequenceId);
+				mqEntity.setMsgId(((CmppDeliverRequestMessage) obj).getMsgId());
+				mqEntity.setObj(cmppDeliverRequestSelfDefinedMessage);
+				mqEntity.setCmppMsgType(cmppType);
+				mqEntity.setCmppVersion(((CmppDeliverRequestMessage) obj).getCmppVersion());
+				break;
+			default:
+				LOGGER.error("wrong cmpp type");
+				break;
 		}
 
 		if (mqEntity != null) {
@@ -86,8 +85,8 @@ public class RabbitmqService {
 			channel.confirmSelect();
 			// 声明create_queue和create_consumer
 			channel.basicQos(1);
-			String queueName = RabbitMqConsts.NETTY_APPID_BACK_QUEUE_NAME_PREFIX + appId;
-			String exchangeName = RabbitMqConsts.NETTY_APPID_BACK_EXCHANGE_NAME_PREFIX + appId;
+			String queueName = RabbitMqConsts.NETTY_APPID_BACK_QUEUE_NAME_PREFIX + appId + "_" + serverId;
+			String exchangeName = RabbitMqConsts.NETTY_APPID_BACK_EXCHANGE_NAME_PREFIX + appId + "_" + serverId;
 			if (!isQueueExist(queueName)) {
 				channel.exchangeDeclare(exchangeName, "direct", true);
 				channel.queueDeclare(queueName, true, false, false, null);
@@ -95,7 +94,7 @@ public class RabbitmqService {
 				channel.queueBind(queueName, exchangeName, "consume");
 				LOGGER.info("普通用户userId={}的转写任务队列{}创建成功", appId, queueName);
 				// 发布到create_queue创建对应的consumer
-				channel.basicPublish(RabbitMqConsts.NETTY_CREATE_BACK_QUEUE_EXCHANGE_NAME, "create",
+				channel.basicPublish(RabbitMqConsts.NETTY_CREATE_BACK_QUEUE_EXCHANGE_NAME + "_" + serverId, "create",
 						MessageProperties.PERSISTENT_TEXT_PLAIN, queueName.getBytes());
 			}
 			channel.basicPublish(exchangeName, "consume", MessageProperties.PERSISTENT_TEXT_PLAIN,
@@ -111,7 +110,7 @@ public class RabbitmqService {
 
 	/**
 	 * 判断当前MQ中是否存在userId或者appId对应的queue 若存在则返回true，不存在返回false，并把queueName加到集合中
-	 * 
+	 *
 	 * @param queueName
 	 * @return
 	 */

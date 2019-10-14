@@ -1,28 +1,23 @@
 package com.i.server.handler;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.alibaba.fastjson.JSON;
+import com.i.server.EchoServer;
+import com.zx.sms.codec.cmpp.msg.*;
+import com.zx.sms.common.util.CachedMillisecondClock;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelHandlerContext;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.time.DateFormatUtils;
 
-import com.i.server.EchoServer;
-import com.zx.sms.codec.cmpp.msg.CmppDeliverRequestMessage;
-import com.zx.sms.codec.cmpp.msg.CmppDeliverResponseMessage;
-import com.zx.sms.codec.cmpp.msg.CmppQueryRequestMessage;
-import com.zx.sms.codec.cmpp.msg.CmppQueryResponseMessage;
-import com.zx.sms.codec.cmpp.msg.CmppReportRequestMessage;
-import com.zx.sms.codec.cmpp.msg.CmppSubmitRequestMessage;
-import com.zx.sms.codec.cmpp.msg.CmppSubmitResponseMessage;
-import com.zx.sms.common.util.CachedMillisecondClock;
-
-import io.netty.channel.ChannelFuture;
-import io.netty.channel.ChannelHandlerContext;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CMPPMessageReceiveHandler extends MessageReceiveHandler {
 
     @Override
     protected ChannelFuture reponse(final ChannelHandlerContext ctx, Object msg) {
+        List<String> names = ctx.pipeline().names();
+        System.out.println(JSON.toJSONString(names));
         int result = RandomUtils.nextInt(0, 100) > 97 ? 0 : 0;
         if (msg instanceof CmppDeliverRequestMessage) {
             System.out.println("ly 接收到 CmppDeliverRequestMessage 消息");
