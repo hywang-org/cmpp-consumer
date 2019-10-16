@@ -95,6 +95,7 @@ public class AppConvertConsumer extends DefaultConsumer {
 						msgContent);
 				System.out.println("cmppObj msgcontent = " + cmppObj.getMsgContent());
 				sendSms(cmppObj);
+//				EchoServer.sendSms("13966732101", cmppObj.getMsgContent(), "109002");
 		}
 //		this.getChannel().basicAck(envelope.getDeliveryTag(), false);
 		// CmppSubmitRequestSelfDefinedMessage selfDefinedMessage =
@@ -125,7 +126,7 @@ public class AppConvertConsumer extends DefaultConsumer {
 				break;
 			} else {
 				try {
-					java.lang.Thread.sleep(10);
+					java.lang.Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();

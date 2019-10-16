@@ -35,7 +35,7 @@ public class EchoServer {
 
 	@Autowired
 	private RabbitmqService rabbitmqService;
-	
+
 	@Resource
 	private SmsDao smsDao;
 
@@ -47,8 +47,8 @@ public class EchoServer {
 	@Resource
 	ValidateClientRedis r1;
 
-	@Resource
-	MsgIdAppIdRedis r2;
+//	@Resource
+//	MsgIdAppIdRedis r2;
 
 	@Resource
 	ConsumerRedis r3;
@@ -56,20 +56,46 @@ public class EchoServer {
 	@Resource
 	ProducerRedis r4;
 
+	@Resource
+	ChannelInfoRedis r5;
+
 	public void connect() {
 		List<Channel> channelList = smsDao.find("from Channel");
-		System.out.println("channelList size = " +channelList.size());
-		for(Channel channel:channelList) {
+		System.out.println("channelList size = " + channelList.size());
+		for (Channel channel : channelList) {
 			CMPPClientEndpointEntity client = new CMPPClientEndpointEntity();
 			client.setId(channel.getSpId());
 			client.setHost(channel.getSpIp());
 			client.setPort(channel.getSpPort());
-			client.setUserName(channel.getSpLoginName());
+//			client.setUserName(channel.getSpLoginName());
+			client.setUserName(channel.getSpId());
 			client.setPassword(channel.getSpLoginPwd());
 			client.setServiceId("");
 			client.setMaxChannels((short) 1);
 			client.setVersion((short) 0x20);
 			client.setWriteLimit(channel.getSpeedLimit());
+
+//			CMPPClientEndpointEntity client = new CMPPClientEndpointEntity();
+//			client.setId("109002");
+//			client.setHost("121.41.46.165");
+//			client.setPort(7890);
+//			client.setUserName("109002");
+//			client.setPassword("Aa123456");
+//			client.setServiceId("");
+//			client.setMaxChannels((short) 1);
+//			client.setVersion((short) 0x20);
+//			client.setWriteLimit(100);
+
+//			CMPPClientEndpointEntity client = new CMPPClientEndpointEntity();
+//			client.setId("109010");
+//			client.setHost("121.41.46.165");
+//			client.setPort(7890);
+//			client.setUserName("109010");
+//			client.setPassword("Aa123456");
+//			client.setServiceId("");
+//			client.setMaxChannels((short) 1);
+//			client.setVersion((short) 0x20);
+//			client.setWriteLimit(100);
 
 			client.setGroupName("test");
 			client.setChartset(Charset.forName("utf-8"));
@@ -92,11 +118,20 @@ public class EchoServer {
 
 		Map<String, RedisOperationSets> redisOperationSetsMap = new HashMap<String, RedisOperationSets>();
 		redisOperationSetsMap.put(RedisConsts.REDIS_VALIDATE_CLINET, r1);
-		redisOperationSetsMap.put(RedisConsts.REDIS_MSGID_APPID_INFO, r2);
+//		redisOperationSetsMap.put(RedisConsts.REDIS_MSGID_APPID_INFO, r2);
 		redisOperationSetsMap.put(RedisConsts.REDIS_CONSUMER, r3);
 		redisOperationSetsMap.put(RedisConsts.REDIS_PRODUCER, r4);
+		redisOperationSetsMap.put(RedisConsts.REDIS_CHANNEL_INFO, r5);
 		// ly modify
 		manager.setRedisOperationSetsMap(redisOperationSetsMap);
+
+		System.out.println("hi = " + manager.getRedisOperationSetsMap().get(RedisConsts.REDIS_CHANNEL_INFO).getRedisTemplate().opsForHash().get("109002", "sp_ip"));
+//		try {
+//			Thread.sleep(6000);
+//		} catch (Exception e) {
+//
+//		}
+//		sendSms("13966732101", "【哈工大机器人】我一三", "109010");
 	}
 
 	public static void sendSms2(CmppSubmitRequestMessage msg) {
@@ -125,11 +160,13 @@ public class EchoServer {
 		msg.setRegisteredDelivery((short) 1);
 		msg.setMsgid(new MsgId());
 		msg.setServiceId("");
-		msg.setSrcId("106909009002");
-		msg.setMsgsrc("109002");
+		msg.setSrcId("10690427969010");
+//		msg.setSrcId("106909009002");
+		msg.setMsgsrc(id);
 		EndpointConnector<?> connector = EndpointManager.INS.getEndpointConnector(id);
 		while (true) {
 			ChannelFuture write = connector.asynwrite(msg);
+			System.out.println("written");
 			if (write != null) {
 				break;
 			} else {

@@ -8,6 +8,8 @@ public class RedisConsts {
 
 	public static final String REDIS_APP_INFO = "AppInfoRedis";
 
+	public static final String REDIS_CHANNEL_INFO = "RedisChannelInfo";
+
 	public static final String REDIS_MSGID_APPID_INFO = "MsgIdAppIdRedis";
 
 	public static final String REDIS_CONSUMER = "RedisConsumer";

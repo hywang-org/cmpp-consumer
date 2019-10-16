@@ -1,15 +1,13 @@
 package com.i.server.dao.redis;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Repository;
+
+import javax.annotation.PostConstruct;
 
 //this redis store supplier's msgid and our appid
-@Repository
+//@Repository
 public class MsgIdAppIdRedis extends RedisOperationSets {
-	@Resource(name = "msgIdAppIdRedisDao")
+	//	@Resource(name = "msgIdAppIdRedisDao")
 	private RedisTemplate<String, Object> redisTemplate;
 
 	@PostConstruct

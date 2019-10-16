@@ -7,7 +7,6 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.StringUtils;
-
 import redis.clients.jedis.JedisPoolConfig;
 
 @Configuration
@@ -57,13 +56,21 @@ public class RedisConfiguer {
 		return temple;
 	}
 
-	@Bean(name = "msgIdAppIdRedisDao")
-	public StringRedisTemplate redisTemplateConnectDB() {
+	@Bean(name = "redisChannelInfo")
+	public StringRedisTemplate redisTemplateConnectDB1() {
 		StringRedisTemplate temple = new StringRedisTemplate();
 		temple.setConnectionFactory(
 				connectionFactory(hostName, port, password, maxIdle, maxTotal, database1, maxWaitMillis, false));
 		return temple;
 	}
+
+//	@Bean(name = "msgIdAppIdRedisDao")
+//	public StringRedisTemplate redisTemplateConnectDB() {
+//		StringRedisTemplate temple = new StringRedisTemplate();
+//		temple.setConnectionFactory(
+//				connectionFactory(hostName, port, password, maxIdle, maxTotal, database4, maxWaitMillis, false));
+//		return temple;
+//	}
 
 	@Bean(name = "redisDaoGetMaxConcurrentTransNum")
 	public StringRedisTemplate redisTemplateConnectDB3() {
@@ -90,7 +97,7 @@ public class RedisConfiguer {
 	}
 
 	public RedisConnectionFactory connectionFactory(String hostName, int port, String password, int maxIdle,
-			int maxTotal, int index, long maxWaitMillis, boolean testOnBorrow) {
+	                                                int maxTotal, int index, long maxWaitMillis, boolean testOnBorrow) {
 		JedisConnectionFactory jedis = new JedisConnectionFactory();
 		jedis.setHostName(hostName);
 		jedis.setPort(port);
