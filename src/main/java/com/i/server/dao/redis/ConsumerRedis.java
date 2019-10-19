@@ -1,14 +1,14 @@
 package com.i.server.dao.redis;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
-
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+
 @Repository
 public class ConsumerRedis extends RedisOperationSets {
-	@Resource(name = "consumerRedisDao")
+	@Resource(name = "redisConsumer")
 	private RedisTemplate<String, Object> redisTemplate;
 
 	@PostConstruct

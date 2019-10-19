@@ -45,10 +45,7 @@ public class RedisConfiguer {
 	@Value("${redis.database3}")
 	private int database3;
 
-	@Value("${redis.database4}")
-	private int database4;
-
-	@Bean(name = "validateClientRedisDao")
+	@Bean(name = "redisAppInfo")
 	public StringRedisTemplate redisTemplateConnectDB2() {
 		StringRedisTemplate temple = new StringRedisTemplate();
 		temple.setConnectionFactory(
@@ -64,35 +61,19 @@ public class RedisConfiguer {
 		return temple;
 	}
 
-//	@Bean(name = "msgIdAppIdRedisDao")
-//	public StringRedisTemplate redisTemplateConnectDB() {
-//		StringRedisTemplate temple = new StringRedisTemplate();
-//		temple.setConnectionFactory(
-//				connectionFactory(hostName, port, password, maxIdle, maxTotal, database4, maxWaitMillis, false));
-//		return temple;
-//	}
-
-	@Bean(name = "redisDaoGetMaxConcurrentTransNum")
-	public StringRedisTemplate redisTemplateConnectDB3() {
+	@Bean(name = "redisProducer")
+	public StringRedisTemplate redisTemplateConnectDB4() {
 		StringRedisTemplate temple = new StringRedisTemplate();
 		temple.setConnectionFactory(
 				connectionFactory(hostName, port, password, maxIdle, maxTotal, database2, maxWaitMillis, false));
 		return temple;
 	}
 
-	@Bean(name = "redisProducer")
-	public StringRedisTemplate redisTemplateConnectDB4() {
-		StringRedisTemplate temple = new StringRedisTemplate();
-		temple.setConnectionFactory(
-				connectionFactory(hostName, port, password, maxIdle, maxTotal, database3, maxWaitMillis, false));
-		return temple;
-	}
-
-	@Bean(name = "consumerRedisDao")
+	@Bean(name = "redisConsumer")
 	public StringRedisTemplate saveDeletedOrders() {
 		StringRedisTemplate temple = new StringRedisTemplate();
 		temple.setConnectionFactory(
-				connectionFactory(hostName, port, password, maxIdle, maxTotal, database4, maxWaitMillis, false));
+				connectionFactory(hostName, port, password, maxIdle, maxTotal, database3, maxWaitMillis, false));
 		return temple;
 	}
 

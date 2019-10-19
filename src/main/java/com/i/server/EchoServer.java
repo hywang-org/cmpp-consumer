@@ -4,7 +4,7 @@ import com.i.server.consts.RedisConsts;
 import com.i.server.dao.redis.*;
 import com.i.server.data.mysql.dao.SmsDao;
 import com.i.server.data.mysql.entity.Channel;
-import com.i.server.handler.MessageReceiveHandler1;
+import com.i.server.handler.MessageReceiveHandler;
 import com.i.server.rabbitmq.service.RabbitmqService;
 import com.zx.sms.codec.cmpp.msg.CmppSubmitRequestMessage;
 import com.zx.sms.common.util.MsgId;
@@ -45,19 +45,17 @@ public class EchoServer {
 	}
 
 	@Resource
-	ValidateClientRedis r1;
-
-//	@Resource
-//	MsgIdAppIdRedis r2;
+	AppInfoRedis r1;
 
 	@Resource
-	ConsumerRedis r3;
+	ChannelInfoRedis r2;
 
 	@Resource
-	ProducerRedis r4;
+	ProducerRedis r3;
 
 	@Resource
-	ChannelInfoRedis r5;
+	ConsumerRedis r4;
+
 
 	public void connect() {
 		List<Channel> channelList = smsDao.find("from Channel");
@@ -105,7 +103,7 @@ public class EchoServer {
 			client.setReSendFailMsg(false);
 			client.setSupportLongmsg(SupportLongMessage.BOTH);
 			List<BusinessHandlerInterface> clienthandlers = new ArrayList<BusinessHandlerInterface>();
-			clienthandlers.add(new MessageReceiveHandler1(rabbitmqService, smsDao));
+			clienthandlers.add(new MessageReceiveHandler(rabbitmqService, smsDao));
 			// clienthandlers.add( new SessionConnectedHandler());
 			client.setBusinessHandlerSet(clienthandlers);
 
@@ -117,11 +115,10 @@ public class EchoServer {
 		}
 
 		Map<String, RedisOperationSets> redisOperationSetsMap = new HashMap<String, RedisOperationSets>();
-		redisOperationSetsMap.put(RedisConsts.REDIS_VALIDATE_CLINET, r1);
-//		redisOperationSetsMap.put(RedisConsts.REDIS_MSGID_APPID_INFO, r2);
-		redisOperationSetsMap.put(RedisConsts.REDIS_CONSUMER, r3);
-		redisOperationSetsMap.put(RedisConsts.REDIS_PRODUCER, r4);
-		redisOperationSetsMap.put(RedisConsts.REDIS_CHANNEL_INFO, r5);
+		redisOperationSetsMap.put(RedisConsts.REDIS_APP_INFO, r1);
+		redisOperationSetsMap.put(RedisConsts.REDIS_CHANNEL_INFO, r2);
+		redisOperationSetsMap.put(RedisConsts.REDIS_PRODUCER, r3);
+		redisOperationSetsMap.put(RedisConsts.REDIS_CONSUMER, r4);
 		// ly modify
 		manager.setRedisOperationSetsMap(redisOperationSetsMap);
 
